@@ -1,6 +1,8 @@
 <?php
     session_start();
-    session_destroy();
+
+    if(isset($_SESSION["user_data"])){
+
     if(isset($_POST['save'])){
         $fullname = $_POST['fullname'];
         $phone_number = $_POST['phone_number'];
@@ -12,10 +14,11 @@
 
     // Data to be sent in the request
     $data = array(
-        'fullnam' => $fullname,
+        'fullname' => $fullname,
         'phone_number' => $phone_number,
         'type' => $type,
-        'price' => $price
+        'price' => $price,
+        'email'=> $_SESSION["user_data"]['email']
     );
 
     // Initialize cURL session
@@ -43,20 +46,9 @@
         // Process response
         if ($decoded_response) {
             // API call was successful
-            print_r($decoded_response);
-            // session_start();
-            // $_SESSION["response"] = $decoded_response;
-            // if($_SESSION["response"]["status"] == "failed"){
-                
-            //     // header("location: index.php");
-                
-            //     // var_dump($_SESSION["response"]);
-            // }else{
-            //     $_SESSION["user_data"] = $decoded_response;
-            //     header("location: dashboard.php");
-            //     // var_dump($_SESSION["user_data"]);
-            // }
-        
+           
+            $_SESSION["response"] = $decoded_response;
+            
         } else {
             // Error decoding JSON response
             echo "Error decoding JSON response.";
@@ -90,23 +82,23 @@
                             <img src="images/Asset 38@300x.png" width="100%" alt="">
                         </div>
                         <div class="links">
-                            <a href="dashboard.html">
+                            <a href="dashboard.php">
                                 <i class="bi bi-columns-gap"></i>
                                 Dashboard
                             </a>
-                            <a href="referral.html" class="active">
+                            <a href="referral.php" class="active">
                                 <i class="bi bi-people"></i>
                                 Referral
                             </a>
-                            <a href="withdrawal.html">
+                            <a href="withdrawal.php">
                                 <i class="bi bi-cash-stack"></i>
                                 Withdrawal
                             </a>
-                            <a href="service.html">
+                            <a href="service.php">
                                 <i class="bi bi-person"></i>
                                 Service
                             </a>
-                            <a href="packages.html">
+                            <a href="packages.php">
                                 <i class="bi bi-person"></i>
                                 Packages
                             </a>
@@ -133,7 +125,7 @@
                         </div>
                         <div class="pro d-flex align-items-center gap-2">
                             <img src="images/Asset 27@300x.png" width="100%" alt="">
-                            <h4>Adebayo</h4>
+                            <h4><?php echo $_SESSION["user_data"]['fullname'] ?></h4>
                         </div>
                     </div>
                     <div class="body referral my-3 px-4">
@@ -152,7 +144,7 @@
                                     <div class="amount">
                                         <label for="amount">Amount:</label>
                                         <div class="d-flex">
-                                            <i class="bi bi-hash"></i>
+                                            <i class="">₦</i>
                                             <input class="bord" type="number" name="price" id="amount" placeholder="123456" required>
                                         </div>
                                     </div>
@@ -175,7 +167,16 @@
                                 </div>
                             </div>
                             <center>
-                                <p>Successful</p>
+                                <?php
+                                    if(isset($_SESSION["response"])){
+                                        $message = $_SESSION["response"]["message"];
+                                        ?>
+                                        <p><?=$message?></p>
+                                        <?php
+                                        unset($_SESSION["response"]);
+                                    }
+                                ?>
+                                
                                 <button type="submit" name="save">Save</button>
                             </center>
                         </form>
@@ -190,3 +191,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
+
+<?php
+
+    }else{
+        header("location: index.php");
+    }
+?>

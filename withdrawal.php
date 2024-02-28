@@ -1,3 +1,61 @@
+<?php
+    session_start();
+    if(isset($_POST['save'])){
+        
+        $bank_name = $_POST['bank_name'];
+        $bank_number = $_POST['bank_number'];
+        $amount = $_POST['amount'];
+
+    // API endpoint
+    $api_url = 'https://server.sales.sunmence.com.ng/withdraw';
+
+    // Data to be sent in the request
+    $data = array(
+        
+        'bank_name' => $bank_name,
+        'bank_number' => $bank_number,
+        'amount' => $amount,
+        'email'=> $_SESSION["user_data"]['email']
+    );
+
+    // Initialize cURL session
+    $curl = curl_init();
+
+    // Set cURL options
+    curl_setopt($curl, CURLOPT_URL, $api_url);
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data)); // Convert data array to URL-encoded query string
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Return response as a string
+
+    // Execute cURL request
+    $response = curl_exec($curl);
+
+    // Check for errors
+    // echo "wo";
+    if ($response === false) {
+        $error_message = curl_error($curl);
+        // Handle error
+        echo "Error occurred: $error_message";
+    } else {
+        // Decode JSON response
+        $decoded_response = json_decode($response, true);
+        
+        // Process response
+        if ($decoded_response) {
+            // API call was successful
+            $_SESSION["response"] = $decoded_response;
+            
+            
+        } else {
+            // Error decoding JSON response
+            echo "Error decoding JSON response.";
+        }
+    }
+
+    // Close cURL session
+    curl_close($curl);
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,23 +79,23 @@
                             <img src="images/Asset 38@300x.png" width="100%" alt="">
                         </div>
                         <div class="links">
-                            <a href="dashboard.html">
+                            <a href="dashboard.php">
                                 <i class="bi bi-columns-gap"></i>
                                 Dashboard
                             </a>
-                            <a href="referral.html">
+                            <a href="referral.php">
                                 <i class="bi bi-people"></i>
                                 Referral
                             </a>
-                            <a href="withdrawal.html" class="active">
+                            <a href="withdrawal.php" class="active">
                                 <i class="bi bi-cash-stack"></i>
                                 Withdrawal
                             </a>
-                            <a href="service.html">
+                            <a href="service.php">
                                 <i class="bi bi-person"></i>
                                 Service
                             </a>
-                            <a href="packages.html">
+                            <a href="packages.php">
                                 <i class="bi bi-person"></i>
                                 Packages
                             </a>
@@ -71,25 +129,12 @@
                         <center>
                             <h2>WITHDRAWAL FORM</h2>
                         </center>
-                        <form action="">
-                            <div class="row g-3">
-                                <div class="col col-lg-6 col-md-6 col-12">
-                                    <div class="email">
-                                        <label for="emailname">Email Address:</label>
-                                        <input type="email" name="emailname" id="emailname" placeholder="olatunji123@gmail.com" required>
-                                    </div>
-                                </div>
-                                <div class="col col-lg-6 col-md-6 col-12">
-                                    <div class="number">
-                                        <label for="number">Phone number:</label>
-                                        <input type="number" name="number" id="number" placeholder="1234567890" required>
-                                    </div>
-                                </div>
-                            </div>
+                        <form action="" method="post">
+                           
                             <div class="amount">
                                 <label for="amount">Amount:</label>
                                 <div class="d-flex">
-                                    <i class="bi bi-hash"></i>
+                                    <i class="">₦</i>
                                     <input class="bord" type="number" name="amount" id="amount" placeholder="123456" required>
                                 </div>
                             </div>
@@ -97,18 +142,26 @@
                                 <div class="col col-lg-6 col-md-6 col-12">
                                     <div class="accountNumber">
                                         <label for="accountNumber">Account number:</label>
-                                        <input type="number" name="accountNumber" id="accountNumber" placeholder="123456" required>
+                                        <input type="number" name="bank_number" id="accountNumber" placeholder="123456" required>
                                     </div>
                                 </div>
                                 <div class="col col-lg-6 col-md-6 col-12">
                                     <div class="bankName">
                                         <label for="bankName">Bank name:</label>
-                                        <input type="text" name="bankName" id="bankName" placeholder="Access Bank" required>
+                                        <input type="text" name="bank_name" id="bankName" placeholder="Access Bank" required>
                                     </div>
                                 </div>
                             </div>
                             <center>
-                                <p>Successful</p>
+                                <?php
+                                    if(isset($_SESSION["response"])){
+                                        $message = $_SESSION["response"]["message"];
+                                        ?>
+                                        <p><?=$message?></p>
+                                        <?php
+                                        unset($_SESSION["response"]);
+                                    }
+                                ?>
                                 <button type="submit" name="save">Save</button>
                             </center>
                         </form>

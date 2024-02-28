@@ -1,3 +1,8 @@
+<?php
+
+    session_start();
+    if(isset($_SESSION["user_data"])){
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,23 +26,23 @@
                             <img src="images/Asset 38@300x.png" width="100%" alt="">
                         </div>
                         <div class="links">
-                            <a href="dashboard.html">
+                            <a href="dashboard.php">
                                 <i class="bi bi-columns-gap"></i>
                                 Dashboard
                             </a>
-                            <a href="referral.html">
+                            <a href="referral.php">
                                 <i class="bi bi-people"></i>
                                 Referral
                             </a>
-                            <a href="withdrawal.html">
+                            <a href="withdrawal.php">
                                 <i class="bi bi-cash-stack"></i>
                                 Withdrawal
                             </a>
-                            <a href="service.html" class="active">
+                            <a href="service.php" class="active">
                                 <i class="bi bi-person"></i>
                                 Service
                             </a>
-                            <a href="packages.html">
+                            <a href="packages.php">
                                 <i class="bi bi-person"></i>
                                 Packages
                             </a>
@@ -64,7 +69,7 @@
                         </div>
                         <div class="pro d-flex align-items-center gap-2">
                             <img src="images/Asset 27@300x.png" width="100%" alt="">
-                            <h4>Adebayo</h4>
+                            <h4><?php echo $_SESSION["user_data"]['fullname'] ?></h4>
                         </div>
                     </div>
                     <div class="body my-3 px-4">
@@ -72,21 +77,21 @@
                             <div class="col col-lg-4 col-md-6 col-12">
                                 <div class="bal p-3 shadow">
                                     <i class="bi bi-bar-chart shadow"></i>
-                                    <h2>$ <span>123456</span></h2>
+                                    <h2>₦ <span><?php echo $_SESSION["user_data"]['account_balance'] ?></span></h2>
                                     <p>Main Balance</p>
                                 </div>
                             </div>
                             <div class="col col-lg-4 col-md-6 col-12">
                                 <div class="bal p-3 shadow">
                                     <i class="bi bi-bar-chart shadow"></i>
-                                    <h2>$ <span>123456</span></h2>
+                                    <h2>₦ <span><?php echo $_SESSION["user_data"]['withdraw_balance'] ?></span></h2>
                                     <p>Total Balance</p>
                                 </div>
                             </div>
                             <div class="col col-lg-4 col-md-6 col-12">
                                 <div class="bal p-3 shadow">
                                     <i class="bi bi-bar-chart shadow"></i>
-                                    <h2><span>16</span></h2>
+                                    <h2><span><?php echo $_SESSION["user_data"]['no_referral'] ?></span></h2>
                                     <p>No. of Referral</p>
                                 </div>
                             </div>
@@ -108,27 +113,27 @@
                                 <tbody>
                                     <tr>
                                         <td>Fullstack</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                     <tr>
                                         <td>Frontend</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                     <tr>
                                         <td>Backend</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                     <tr>
                                         <td>Fullstack</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                     <tr>
                                         <td>Fullstack</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                     <tr>
                                         <td>Fullstack</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -146,15 +151,15 @@
                                 <tbody>
                                     <tr>
                                         <td>Broker</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                     <tr>
                                         <td>Application</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                     <tr>
                                         <td>Others</td>
-                                        <td>100,000</td>
+                                        <td>₦100,000</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -195,3 +200,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
+<?php
+
+    }else{
+        header("location: index.php");
+    }
+?>
